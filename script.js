@@ -18,13 +18,24 @@ const progressBar = document.getElementById('progressBar');
 let selectedFile = null;
 
 /* --- noise char sets (CJK/Kana/Hangul + symbols) --- */
-const NOISE_SETS = [
-  "語漢字愛和平生心光明海山風日月天地",
-  "GUSTAFHOSTINGENCRYPT",
-  "アイウエオカキクケコサシスセソタチツテト",
-  "가나다라마바사아자차카타파하안녕",
-  "◆◇■□▲▼★☆※〒●◯♛✦✶✹✺✻✽"
-];
+target: "node",
+        compact: true,
+        renameVariables: true,
+        renameGlobals: true,
+        identifierGenerator: "randomized", // Valid: menghasilkan nama acak
+        stringEncoding: true, // Valid: mengenkripsi string
+        stringSplitting: true, // Valid: memecah string
+        controlFlowFlattening: 0.75, // Valid: mengacak alur kontrol
+        duplicateLiteralsRemoval: true, // Valid: menghapus literal duplikat
+        calculator: true, // Valid: mengacak operasi matematika
+        dispatcher: true, // Valid: mengacak eksekusi dengan dispatcher
+        deadCode: true, // Valid: menambahkan kode mati
+        opaquePredicates: true, // Valid: menambahkan predikat buram
+        lock: {
+            selfDefending: true, // Valid: mencegah modifikasi
+            antiDebug: true, // Valid: mencegah debugging
+            integrity: true, // Valid: memastikan integritas
+            tamperProtection: true // Valid: perlindungan tamper
 
 function rnd(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
 function rndVar(len=10){ const a='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; let s=''; for(let i=0;i<len;i++) s+=a[Math.floor(Math.random()*a.length)]; return s; }
