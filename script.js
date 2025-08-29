@@ -19,37 +19,15 @@ let selectedFile = null;
 
 /* --- noise char sets (CJK/Kana/Hangul + symbols) --- */
 const NOISE_SETS = [
-        const chars = "abcdefghijklmnopqrstuvwxyz";
-        const numbers = "0123456789";
-        const randomNum = numbers[Math.floor(Math.random() * numbers.length)];
-        const randomChar = chars[Math.floor(Math.random() * chars.length)];
-        return `z${randomNum}${randomChar}${Math.random().toString(36).substring(2, 6)}`;
-    };
+  "語漢字愛和平生心光明海山風日月天地",
+  "GUSTAFHOSTINGENCRYPT",
+  "アイウエオカキクケコサシスセソタチツテト",
+  "가나다라마바사아자차카타파하안녕",
+  "◆◇■□▲▼★☆※〒●◯♛✦✶✹✺✻✽"
+];
 
-    return {
-        target: "node",
-        compact: true,
-        renameVariables: true,
-        renameGlobals: true,
-        identifierGenerator: () => generateUltraName(),
-        stringCompression: true, // Kompresi string untuk keamanan tinggi
-        stringEncoding: true,
-        stringSplitting: true,
-        controlFlowFlattening: 0.9,
-        flatten: true,
-        shuffle: true,
-        rgf: true, // Randomized Global Functions
-        deadCode: true,
-        opaquePredicates: true,
-        dispatcher: true,
-        lock: {
-            selfDefending: true,
-            antiDebug: true,
-            integrity: true,
-            tamperProtection: true
-        }
-    };
-};
+function rnd(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function rndVar(len=10){ const a='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; let s=''; for(let i=0;i<len;i++) s+=a[Math.floor(Math.random()*a.length)]; return s; }
 
 /* --- UI interactions --- */
 dropzone.addEventListener('click', ()=> fileInput.click());
@@ -79,6 +57,25 @@ function formatBytes(n){
 }
 
 function setProgress(p){ progressBar.style.width = Math.max(0,Math.min(100,p)) + '%'; }
+
+/* Insert noise into base64 string */
+function injectNoise(base64Str, density=0.12){
+  const out = [];
+  for(let i=0;i<base64Str.length;i++){
+    out.push(base64Str[i]);
+    if(Math.random() < density){
+      const set = NOISE_SETS[Math.floor(Math.random()*NOISE_SETS.length)];
+      const cnt = 1 + Math.floor(Math.random()*3);
+      for(let k=0;k<cnt;k++) out.push(set.charAt(Math.floor(Math.random()*set.length)));
+    }
+  }
+  if(Math.random() < 0.6){
+    const set2 = NOISE_SETS[Math.floor(Math.random()*NOISE_SETS.length)];
+    const tailCnt = 4 + Math.floor(Math.random()*8);
+    for(let t=0;t<tailCnt;t++) out.push(set2.charAt(Math.floor(Math.random()*set2.length)));
+  }
+  return out.join('');
+}
 
 /* Build loader string that is compatible with Browser & Node */
 function buildCrossPlatformLoader(obfStr){
